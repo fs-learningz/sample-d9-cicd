@@ -8,6 +8,7 @@
     <Project Path="src\Note.Application\Note.Application.csproj" />
   </Folder>
   <Folder Name="/test/">
+    <Project Path="test/Note.Api.Test/Note.Api.Test.csproj" />
     <Project Path="test/Note.Application.Test/Note.Application.Test.csproj" />
   </Folder>
 </Solution>
