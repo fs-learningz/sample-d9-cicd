@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AppHost/AppHost.csproj" />
+    <Project Path="src/Note.Domain/Note.Domain.csproj" />
+    <Project Path="src/Note.Infrastructure/Note.Infrastructure.csproj" />
+    <Project Path="src/Note.Web/Note.Web.csproj" />
+    <Project Path="src\Note.Api\Note.Api.csproj" />
+    <Project Path="src\Note.Application\Note.Application.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Note.Application.Test/Note.Application.Test.csproj" />
+  </Folder>
+</Solution>
