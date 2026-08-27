@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.5.2">
+<Project Sdk="Aspire.AppHost.Sdk/13.5.3">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -8,5 +8,13 @@
         <AspireUseCliBundle>true</AspireUseCliBundle>
         <UserSecretsId>e4e0a62e-cc95-4be9-b91d-555c36c0395c</UserSecretsId>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Aspire.Hosting.Sqlite" Version="13.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Note.Api\Note.Api.csproj" />
+    </ItemGroup>
 
 </Project>

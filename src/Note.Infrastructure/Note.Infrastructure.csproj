@@ -6,4 +6,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.1.79" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Note.Application\Note.Application.csproj" />
+        <ProjectReference Include="..\Note.Domain\Note.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

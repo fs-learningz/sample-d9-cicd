@@ -1,6 +1,33 @@
 @NoteApi_HostAddress = http://localhost:5033
+@noteId = replace-with-an-id-returned-by-create
 
-GET {{NoteApi_HostAddress}}/weatherforecast/
+### List all notes
+GET {{NoteApi_HostAddress}}/notes
 Accept: application/json
+
+### Get a single note
+GET {{NoteApi_HostAddress}}/notes/{{noteId}}
+Accept: application/json
+
+### Create a note
+POST {{NoteApi_HostAddress}}/notes
+Content-Type: application/json
+
+{
+  "title": "Shopping list",
+  "text": "milk, eggs, bread"
+}
+
+### Update a note
+PUT {{NoteApi_HostAddress}}/notes/{{noteId}}
+Content-Type: application/json
+
+{
+  "title": "Groceries",
+  "text": "milk, eggs, bread, coffee"
+}
+
+### Delete a note
+DELETE {{NoteApi_HostAddress}}/notes/{{noteId}}
 
 ###
