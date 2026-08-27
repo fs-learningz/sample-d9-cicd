@@ -19,12 +19,12 @@ public class NoteCreateValidate : IValidator<NoteInputCreate>
 
         if (input.Title is { Length: > MaxLengthTile })
         {
-            errors[nameof(NoteInputCreate.Title)] = [$"Title must be {MaxLengthTile} characters or fewer."];
+            errors[nameof(NoteInputCreate.Title)] = [$"The title must be {MaxLengthTile} characters or fewer."];
         }
 
         if (input.Text is { Length: > MaxLengthText })
         {
-            errors[nameof(NoteInputCreate.Text)] = [$"Text must be {MaxLengthText} characters or fewer."];
+            errors[nameof(NoteInputCreate.Text)] = [$"The text must be {MaxLengthText} characters or fewer."];
         }
 
         return errors;
