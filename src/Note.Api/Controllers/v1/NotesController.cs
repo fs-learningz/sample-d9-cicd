@@ -10,7 +10,7 @@ namespace Note.Api.Controllers.v1;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/notes")]
 [Produces("application/json")]
-public sealed class NotesController : ControllerBase
+public class NotesController : ControllerBase
 {
     private readonly INoteService _service;
 
