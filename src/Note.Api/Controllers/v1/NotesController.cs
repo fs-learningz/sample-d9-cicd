@@ -32,7 +32,7 @@ public sealed class NotesController : ControllerBase
     public async Task<ActionResult> GetNote(string externalId)
     {
         var item = await _service.GetNote(externalId);
-        
+
         if (item is OutputError error)
         {
             return Problem(statusCode: error.Code, title: error.Error, detail: error.ErrorDescription);
@@ -73,7 +73,7 @@ public sealed class NotesController : ControllerBase
                 detail: "An unexpected error occurred while processing your request.");
         }
 
-        return Created("/api/v1/notes", fine.Value);
+        return Created($"/api/v1/notes/{fine.Value.ExternalId}", fine.Value);
     }
 
     [HttpPut("{externalId}")]
@@ -83,7 +83,7 @@ public sealed class NotesController : ControllerBase
     public async Task<ActionResult> Update(string externalId, UpdateNoteInput request)
     {
         var item = await _service.UpdateNote(new NoteInputUpdate(externalId, request.Title, request.Text));
-        
+
         if (item is OutputErrorValidation errorValidation)
         {
             return ValidationProblem(new ValidationProblemDetails(errorValidation.Errors)
@@ -112,7 +112,7 @@ public sealed class NotesController : ControllerBase
     public async Task<ActionResult> Delete(string externalId)
     {
         var item = await _service.DeleteNote(externalId);
-        
+
         if (item is OutputError error)
         {
             return Problem(statusCode: error.Code, title: error.Error, detail: error.ErrorDescription);
