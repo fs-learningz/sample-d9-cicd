@@ -57,7 +57,13 @@ public class NoteServiceReadDeleteTests
         // Arrange
         var created = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         _queryNote.GetNote("a").Returns(new NoteEntity
-            { ExternalId = "a", Title = "t", Text = "x", CreatedAt = created, UpdatedAt = null });
+        {
+            ExternalId = "a",
+            Title = "t",
+            Text = "x",
+            CreatedAt = created,
+            UpdatedAt = null
+        });
 
         // Act
         var result = await _sut.GetNote("a");

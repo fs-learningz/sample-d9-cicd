@@ -181,7 +181,7 @@ public class HmacAuthenticationHandler : AuthenticationHandler<AuthenticationSch
 
         var hmacBytes = Encoding.UTF8.GetBytes(hmacValue);
         var compBytes = Encoding.UTF8.GetBytes(comp);
-        
+
         // compare request hmac signature and computed signature
         if (!CryptographicOperations.FixedTimeEquals(hmacBytes, compBytes))
         {

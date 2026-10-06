@@ -13,7 +13,7 @@ public static class DependencyInjection
             serviceCollection.AddScoped<IQueryNote, QueryNote>();
             serviceCollection.AddScoped<IQueryApplication, QueryApplication>();
             serviceCollection.AddScoped<IQueryHmacNonce, QueryHmacNonce>();
-            
+
             Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
             return serviceCollection;

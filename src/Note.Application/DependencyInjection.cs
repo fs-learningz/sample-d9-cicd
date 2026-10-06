@@ -10,7 +10,7 @@ public static class DependencyInjection
     {
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<IApplicationService, ApplicationService>();
-        
+
         return services;
     }
 }

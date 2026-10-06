@@ -11,7 +11,7 @@ public class HmacSignature
     {
         _credential = Encoding.UTF8.GetBytes(credential);
     }
-    
+
     public string Create(string application, long timestamp, string nonce, string data)
     {
         var payload = $"{application}:{timestamp}:{nonce}:{data}";
@@ -20,7 +20,7 @@ public class HmacSignature
 
         var utf8 = Encoding.UTF8.GetBytes(payload);
         var hash = hmac.ComputeHash(utf8);
-        
+
         return Convert.ToBase64String(hash);
     }
 }
