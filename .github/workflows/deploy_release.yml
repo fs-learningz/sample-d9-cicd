@@ -54,9 +54,9 @@ jobs:
           file: ./src/Note.Api/Dockerfile
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: artifact attestation
-        uses: actions/attest@v4
-        with:
-          subject-name: ghcr.io/${{ github.repository }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+#      - name: artifact attestation
+#        uses: actions/attest@v4
+#        with:
+#          subject-name: ghcr.io/${{ github.repository }}
+#          subject-digest: ${{ steps.push.outputs.digest }}
+#          push-to-registry: true
