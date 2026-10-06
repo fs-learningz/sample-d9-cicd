@@ -123,13 +123,7 @@ public class NoteServiceWriteTests
         var created = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var updated = created.AddDays(1);
         _queryNote.UpdateNote(Arg.Any<NoteEntity>()).Returns(new NoteEntity
-        {
-            ExternalId = "id-1",
-            Title = "t",
-            Text = "x",
-            CreatedAt = created,
-            UpdatedAt = updated
-        });
+            { ExternalId = "id-1", Title = "t", Text = "x", CreatedAt = created, UpdatedAt = updated });
 
         // Act
         var result = await _sut.UpdateNote(new NoteInputUpdate("id-1", "title", "text"));
