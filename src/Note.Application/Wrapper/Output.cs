@@ -6,7 +6,7 @@ public abstract class Output
     {
         Code = code;
     }
-    
+
     public int Code { get; set; }
 }
 
@@ -15,8 +15,8 @@ public class OutputOk<T> : Output
     public OutputOk(int code, T value) : base(code)
     {
         Value = value;
-    }   
-    
+    }
+
     public T Value { get; set; }
 }
 
