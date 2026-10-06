@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
@@ -177,8 +179,11 @@ public class HmacAuthenticationHandler : AuthenticationHandler<AuthenticationSch
         var hmac = new HmacSignature(credential.Credential);
         var comp = hmac.Create(application, timestamp, nonce, data);
 
+        var hmacBytes = Encoding.UTF8.GetBytes(hmacValue);
+        var compBytes = Encoding.UTF8.GetBytes(comp);
+        
         // compare request hmac signature and computed signature
-        if (hmacValue != comp)
+        if (!CryptographicOperations.FixedTimeEquals(hmacBytes, compBytes))
         {
             return (false, "Error: The request doesn't match the HMAC value");
         }

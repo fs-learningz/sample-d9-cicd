@@ -108,7 +108,7 @@ public class NotesController : ControllerBase
 
     [HttpDelete("{externalId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string externalId)
     {
         var item = await _service.DeleteNote(externalId);
