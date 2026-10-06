@@ -44,7 +44,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.tag.outputs.tag }}
         run: |
-          if [[ gh release view $TAG ]]; then
+          if gh release view $TAG; then
             echo "::error::The release $TAG already exists"
             exit 0
           fi
