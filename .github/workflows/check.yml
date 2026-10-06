@@ -1,0 +1,33 @@
+name: check.yml
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-dotnet@6
+        with:
+          dotnet-version: 10.0.x
+      - name: check format
+        run: dotnet format -v diag --verify-no-changes --report report
+      - name: upload report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          path: report
+      - name: restore
+        run: dotnet restore
+      - name: build
+        run: dotnet build --no-restore -v diag -p:TreatWarningsAsErrors=true
+      - name: test
+        run: dotnet test --no-build -v diag

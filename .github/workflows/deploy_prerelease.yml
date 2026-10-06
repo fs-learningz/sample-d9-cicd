@@ -1,0 +1,59 @@
+name: deploy to test
+
+on:
+  release:
+    types: [ prereleased ]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: check tag
+        env:
+          tag: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ ! $tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error title=Invalid-Tag::The tag provided is invalid: $tag"
+            exit 1
+          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tag
+    permissions:
+    contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: container registry
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: metadata
+        id: meta
+        uses: docker/login-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern=v{{major}}.{{minor}}.{{patch}}+${{ github.sha }}
+            type=semver,pattern={{version}}+${{ github.sha }}
+            type=sha
+          flavor: latest=false
+      - name: build and push
+        id: push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./src/Note.Api/Dockerfile
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: artifact attestation
+        uses: actions/attest@v4
+        with:
+          subject-name: ghcr.io/${{ github.repository }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
