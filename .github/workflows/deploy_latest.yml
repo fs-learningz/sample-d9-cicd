@@ -9,6 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event.changes.make_latest.to }}
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v6
         with:
