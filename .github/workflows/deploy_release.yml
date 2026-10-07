@@ -52,6 +52,7 @@ jobs:
         with:
           context: .
           file: ./src/Note.Api/Dockerfile
+          push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 #      - name: artifact attestation
