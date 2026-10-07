@@ -6,43 +6,37 @@ on:
       - edited
 
 jobs:
-  inspect:
+  deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.changes.make_latest.to }}
     steps:
-      - name: event
-        env:
-          ACTION: ${{ github.event.action }}
-        run: echo "::notice title=Release-Action::$ACTION"
-      - name: all
-        env:
-          GONZ: ${{ toJSON(github.event) }}
-        run: |
-          echo "$GONZ"
-          {
-            echo "## event (${{ github.event.action }})"
-            echo '```json'
-            echo "$GONZ"
-            echo '```'
-          } >> $GITHUB_STEP_SUMMARY
-      - name: release payload
-        env:
-          RELEASE: ${{ toJSON(github.event.release) }}
-        run: |
-          echo "$RELEASE"
-          {
-            echo "## release payload (${{ github.event.action }})"
-            echo '```json'
-            echo "$RELEASE"
-            echo '```'
-          } >> $GITHUB_STEP_SUMMARY
-      - name: changes payload
-        env:
-          CHANGES: ${{ toJSON(github.event.changes) }}
-        run: |
-          echo "$CHANGES"
-          {
-            echo "## changes (only set on edited)"
-            echo '```json'
-            echo "$CHANGES"
-            echo '```'
-          } >> $GITHUB_STEP_SUMMARY
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: container registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern=v{{major}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}.{{minor}}.{{patch}}
+            type=semver,pattern=v{{version}}
+            type=sha
+          flavor: latest=true
+      - name: build and push
+        id: push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./src/Note.Api/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
