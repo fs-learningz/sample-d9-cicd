@@ -13,6 +13,17 @@ jobs:
         env:
           ACTION: ${{ github.event.action }}
         run: echo "::notice title=Release-Action::$ACTION"
+      - name: all
+        env:
+          GONZ: ${{ toJSON(github.event) }}
+        run: |
+          echo "$GONZ"
+          {
+            echo "## event (${{ github.event.action }})"
+            echo '```json'
+            echo "$GONZ"
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
       - name: release payload
         env:
           RELEASE: ${{ toJSON(github.event.release) }}
