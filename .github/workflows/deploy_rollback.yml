@@ -1,0 +1,94 @@
+name: rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'The target version to rollback (e.g. v0.1.1)'
+        required: true
+        type: string
+      environment:
+        description: 'The environment to rollback'
+        required: true
+        type: choice
+        options:
+          - test
+          - prod
+      reason:
+        description: 'The reason why the rollback is needed'
+        required: true
+        type: string
+
+concurrency:
+  group: rollback-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    outputs:
+      digest: ${{ steps.resolve.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+      - name: check tag
+        env:
+          tag: ${{ inputs.target }}
+        run: |
+          if [[ ! $tag =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error title=Invalid-Tag::The tag provided is invalid: $tag"
+            exit 1
+          fi
+      - name: container registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: resolve image digest
+        id: resolve
+        env:
+          tag: ${{ inputs.target }}
+          image: ghcr.io/${{ github.repository }}
+        run: |
+          sha=$(git rev-list -n 1 "$tag")
+          source="$image:sha-${sha:0:7}"
+          digest=$(docker buildx imagetools inspect "$source" --format '{{json .Manifest}}' | jq -r '.digest')
+          
+          if [[ -z $digest || $digest == "null" ]]; then
+            echo "::error title=Not-Found::No image found for $tag ($source)"
+            exit 1
+          fi
+          
+          echo "digest=$digest" >> $GITHUB_OUTPUT
+
+  roll:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: deploy roll back image
+        run: echo "deploy ${{ needs.validate.outputs.digest }} to ${{ inputs.environment }}"
+      - name: summary
+        env:
+          environment: ${{ inputs.environment }}
+          target: ${{ inputs.target }}
+          actor: ${{ github.actor }}
+          reason: ${{ inputs.reason }}
+        run: |
+          {
+            echo "## Rollback"
+            echo "|               |               |"
+            echo "|---------------|---------------|"
+            echo "| Environment   | $environment  |"
+            echo "| Target        | $target       |"
+            echo "| Actor         | $actor        |"
+            echo "| Reason        | $reason       |"
+          } >> $GITHUB_STEP_SUMMARY
