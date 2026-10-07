@@ -1,0 +1,43 @@
+name: deploy latest
+
+on:
+  release:
+    types:
+      - published
+      - unpublished
+      - created
+      - edited
+      - deleted
+      - prereleased
+      - released
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: event
+        env:
+          ACTION: ${{ github.event.action }}
+        run: echo "::notice title=Release-Action::$ACTION"
+      - name: release payload
+        env:
+          RELEASE: ${{ toJSON(github.event.release) }}
+        run: |
+          echo "$RELEASE"
+          {
+            echo "## release payload (${{ github.event.action }})"
+            echo '```json'
+            echo "$RELEASE"
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
+      - name: changes payload
+        env:
+          CHANGES: ${{ toJSON(github.event.changes) }}
+        run: |
+          echo "$CHANGES"
+          {
+            echo "## changes (only set on edited)"
+            echo '```json'
+            echo "$CHANGES"
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
