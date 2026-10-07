@@ -43,7 +43,7 @@ jobs:
             type=semver,pattern=v{{major}}
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}.{{minor}}.{{patch}}
-            type=semver,pattern={{version}}
+            type=semver,pattern=v{{version}}
             type=sha
           flavor: latest=true
       - name: build and push
